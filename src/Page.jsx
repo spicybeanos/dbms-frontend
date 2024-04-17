@@ -57,12 +57,14 @@ function Page() {
         AMT: 0,
         TYPE: 'dep'
     });
-    const [currentItem,setCurrentItem] = React.useState({
+    const [currentItem, setCurrentItem] = React.useState({
         NAME: '',
         DESC: '',
         AMT: 0,
         TYPE: 'dep'
     });
+
+    const [totalAmount, setTotalAmount] = React.useState(0);
 
     const sendReqFetch20 = async () => {
         let send_data = JSON.stringify(
@@ -88,12 +90,14 @@ function Page() {
 
                     let lst_ = []
 
+                    setTotalAmount(d.total)
+
                     for (let i = 0; i < len; i++) {
                         let e = {
                             AMT: d.AMT[i],
                             NAME: d.NAME[i],
                             TIME: d.TIME[i],
-                            DESC: d.DESC
+                            DESC: d.DESC[i]
                         }
 
                         lst_.push(e);
@@ -136,7 +140,7 @@ function Page() {
             </IconButton>
         </React.Fragment>
     );
-    const errorSnackAction= (
+    const errorSnackAction = (
         <React.Fragment>
             <IconButton
                 size="small"
@@ -282,6 +286,7 @@ function Page() {
 
     return (
         <>
+            <h1>{totalAmount}</h1>
             <Box sx={{ '& > :not(style)': { m: 1 } }}>
                 <Fab color="primary" aria-label="add" style={{
                     margin: '10px', position: 'sticky'
@@ -377,20 +382,20 @@ function Page() {
                     {"Filter"}
                 </DialogTitle>
                 <DialogContent>
-                <DialogContentText id="alert-dialog-description" style={{margin:'10px'}}>
+                    <DialogContentText id="alert-dialog-description" style={{ margin: '10px' }}>
                         Filter transactions for one person and display them
                     </DialogContentText>
                     <FormControl fullWidth>
                         <InputLabel id="demo-simple-select-label">Name</InputLabel>
                         <TextField
-                        required
-                        id="outlined-required"
-                        label="Name"
-                        style={{ margin: MARGIN }}
-                        onChange={(e) => {
-                            setInfo({ NAME: (e.target.value) });
-                        }}
-                    />
+                            required
+                            id="outlined-required"
+                            label="Name"
+                            style={{ margin: MARGIN }}
+                            onChange={(e) => {
+                                setInfo({ NAME: (e.target.value) });
+                            }}
+                        />
                     </FormControl>
                 </DialogContent>
                 <DialogActions>
@@ -406,12 +411,12 @@ function Page() {
                 <nav aria-label="main mailbox folders">
                     <List>
                         {
-                            list.map((item) => 
+                            list.map((item) =>
                             (
                                 <>
                                     <ListItem disablePadding>
                                         <ListItemButton>
-                                            <ListItemText primary={item.AMT} secondary={<div style={{ color: `${item.TYPE === 'dep' ? 'green' : 'red'}`}}>{item.NAME + ', ' + item.TIME}</div>} />
+                                            <ListItemText primary={item.AMT} secondary={<div style={{ color: `${item.TYPE === 'dep' ? 'green' : 'red'}` }}>{item.NAME + ', ' + item.TIME}</div>} />
                                         </ListItemButton>
                                     </ListItem>
                                     <Divider />
