@@ -51,8 +51,13 @@ function Page() {
     const [filterSelect, setFilterSelect] = React.useState('Select');
     const [snack, setSnack] = React.useState(false);
     const [openErrorSnack, setErrorSnack] = React.useState(false);
-
     const [info, setInfo] = React.useState({
+        NAME: '',
+        DESC: '',
+        AMT: 0,
+        TYPE: 'dep'
+    });
+    const [currentItem,setCurrentItem] = React.useState({
         NAME: '',
         DESC: '',
         AMT: 0,
@@ -275,13 +280,6 @@ function Page() {
 
     }
 
-    const getColor = (type) => {
-        if(type === 'dep')
-         return 'green'
-        else
-        return 'red'
-    }
-
     return (
         <>
             <Box sx={{ '& > :not(style)': { m: 1 } }}>
@@ -408,11 +406,12 @@ function Page() {
                 <nav aria-label="main mailbox folders">
                     <List>
                         {
-                            list.map((item) => (
+                            list.map((item) => 
+                            (
                                 <>
                                     <ListItem disablePadding>
                                         <ListItemButton>
-                                            <ListItemText primary={item.AMT} secondary={<div style={{ color: getColor(item.TYPE)}}>{item.NAME + ', ' + item.TIME}</div>} />
+                                            <ListItemText primary={item.AMT} secondary={<div style={{ color: `${item.TYPE === 'dep' ? 'green' : 'red'}`}}>{item.NAME + ', ' + item.TIME}</div>} />
                                         </ListItemButton>
                                     </ListItem>
                                     <Divider />
