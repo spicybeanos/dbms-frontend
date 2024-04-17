@@ -97,6 +97,7 @@ function Page() {
                             AMT: d.AMT[i],
                             NAME: d.NAME[i],
                             TIME: d.TIME[i],
+                            TYPE:d.TYPE[i],
                             DESC: d.DESC[i]
                         }
 
@@ -192,7 +193,8 @@ function Page() {
                             AMT: d.AMT[i],
                             NAME: d.NAME[i],
                             TIME: d.TIME[i],
-                            DESC: d.DESC
+                            TYPE:d.TYPE[i],
+                            DESC: d.DESC[i]
                         }
 
                         lst_.push(e);
@@ -265,7 +267,8 @@ function Page() {
                             AMT: d.AMT[i],
                             NAME: d.NAME[i],
                             TIME: d.TIME[i],
-                            DESC: d.DESC
+                            TYPE:d.TYPE[i],
+                            DESC: d.DESC[i]
                         }
 
                         lst_.push(e);
@@ -286,7 +289,7 @@ function Page() {
 
     return (
         <>
-            <h1>{totalAmount}</h1>
+            <h1>₹{totalAmount}</h1>
             <Box sx={{ '& > :not(style)': { m: 1 } }}>
                 <Fab color="primary" aria-label="add" style={{
                     margin: '10px', position: 'sticky'
