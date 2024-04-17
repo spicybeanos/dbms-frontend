@@ -416,7 +416,7 @@ function Page() {
                                 <>
                                     <ListItem disablePadding>
                                         <ListItemButton>
-                                            <ListItemText primary={item.AMT} secondary={<div style={{ color: `${item.TYPE === 'dep' ? 'green' : 'red'}` }}>{item.NAME + ', ' + item.TIME}</div>} />
+                                            <ListItemText primary={<div>₹{item.TYPE === 'dep'?'':'-'} {item.AMT}</div>} secondary={<div style={{ color: `${item.TYPE === 'dep' ? 'green' : 'red'}` }}>{item.NAME + ', ' + item.TYPE + ', ' + item.TIME}</div>} />
                                         </ListItemButton>
                                     </ListItem>
                                     <Divider />
