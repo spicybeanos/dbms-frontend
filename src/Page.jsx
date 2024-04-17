@@ -275,6 +275,13 @@ function Page() {
 
     }
 
+    const getColor = (type) => {
+        if(type === 'dep')
+         return 'green'
+        else
+        return 'red'
+    }
+
     return (
         <>
             <Box sx={{ '& > :not(style)': { m: 1 } }}>
@@ -377,21 +384,15 @@ function Page() {
                     </DialogContentText>
                     <FormControl fullWidth>
                         <InputLabel id="demo-simple-select-label">Name</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={filterSelect}
-                            label="Type"
-                            onChange={(e) => {
-                                setFilterSelect(e.target.value);
-                            }}
-                        >
-                            {
-                                getUniquenames(list).map((e) => {
-                                    <MenuItem value={e}>{e}</MenuItem>
-                                })
-                            }
-                        </Select>
+                        <TextField
+                        required
+                        id="outlined-required"
+                        label="Name"
+                        style={{ margin: MARGIN }}
+                        onChange={(e) => {
+                            setInfo({ NAME: (e.target.value) });
+                        }}
+                    />
                     </FormControl>
                 </DialogContent>
                 <DialogActions>
@@ -411,7 +412,7 @@ function Page() {
                                 <>
                                     <ListItem disablePadding>
                                         <ListItemButton>
-                                            <ListItemText primary={item.AMT} secondary={<div style={{ color: 'var(--text-600)' }}>{item.NAME + ', ' + item.TIME}</div>} />
+                                            <ListItemText primary={item.AMT} secondary={<div style={{ color: getColor(item.TYPE)}}>{item.NAME + ', ' + item.TIME}</div>} />
                                         </ListItemButton>
                                     </ListItem>
                                     <Divider />
