@@ -417,7 +417,7 @@ function Page() {
                             list.map((item) =>
                             (
                                 <>
-                                    <ListItem disablePadding style={{ color: `${item.TYPE === 'dep' ? '#90ee90' : '#FF7276'}` }}>
+                                    <ListItem disablePadding style={{ backgroundColor: `${item.TYPE === 'dep' ? '#90ee90' : '#FF7276'}` }}>
                                         <ListItemButton>
                                             <ListItemText primary={<div>₹{item.TYPE === 'dep'?'':'-'} {item.AMT}</div>} secondary={<div >{item.NAME + ', ' + item.TYPE + ', ' + item.TIME}</div>} />
                                         </ListItemButton>
