@@ -31,14 +31,26 @@ import CloseIcon from '@mui/icons-material/Close';
 
 const MARGIN = '10px';
 
+function getUniquenames(list) {
+    let names = []
+    list.forEach(e => {
+        if (!names.includes(e.NAME)) {
+            names.push(e.NAME)
+        }
+    });
 
+    return names
+}
 
 function Page() {
     const [addDialogOpen, setAddOpenDialog] = React.useState(false);
+    const [filterDialogOpen, setFilterOpenDialog] = React.useState(false);
     const [list, setList] = React.useState([]);
     const [filterList, setFilterList] = React.useState([]);
     const [disT, setD] = React.useState('dep');
+    const [filterSelect, setFilterSelect] = React.useState('Select');
     const [snack, setSnack] = React.useState(false);
+    const [openErrorSnack, setErrorSnack] = React.useState(false);
 
     const [info, setInfo] = React.useState({
         NAME: '',
@@ -62,7 +74,8 @@ function Page() {
                 body: send_data,
             }).then(response => {
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    setErrorSnack(true)
+                    console.error('Network response was not ok');
                 }
 
                 response.json().then((d) => {
@@ -75,7 +88,7 @@ function Page() {
                             AMT: d.AMT[i],
                             NAME: d.NAME[i],
                             TIME: d.TIME[i],
-                            DESC:d.DESC
+                            DESC: d.DESC
                         }
 
                         lst_.push(e);
@@ -99,6 +112,13 @@ function Page() {
 
         setSnack(false);
     };
+    const handleCloseError = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setErrorSnack(false);
+    };
     const snackAction = (
         <React.Fragment>
             <IconButton
@@ -106,6 +126,18 @@ function Page() {
                 aria-label="close"
                 color="inherit"
                 onClick={handleCloseSnack}
+            >
+                <CloseIcon fontSize="small" />
+            </IconButton>
+        </React.Fragment>
+    );
+    const errorSnackAction= (
+        <React.Fragment>
+            <IconButton
+                size="small"
+                aria-label="close"
+                color="inherit"
+                onClick={handleCloseError}
             >
                 <CloseIcon fontSize="small" />
             </IconButton>
@@ -137,7 +169,8 @@ function Page() {
                 body: send_data,
             }).then(response => {
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    setErrorSnack(true)
+                    console.error('Network response was not ok');
                 }
 
                 response.json().then((d) => {
@@ -150,7 +183,7 @@ function Page() {
                             AMT: d.AMT[i],
                             NAME: d.NAME[i],
                             TIME: d.TIME[i],
-                            DESC:d.DESC
+                            DESC: d.DESC
                         }
 
                         lst_.push(e);
@@ -175,11 +208,21 @@ function Page() {
     const handleAddDialogClose = () => {
         setAddOpenDialog(false);
     };
+    const handleFilterDialogClose = () => {
+        setFilterOpenDialog(false);
+    };
     const handleCloseAdd = () => {
         sendReqAdd();
         setAddOpenDialog(false);
     };
     const handleFilter = () => {
+        setFilterOpenDialog(true)
+    }
+    const handleSendFilter = () => {
+        handleFilterDialogClose();
+        sendFilter();
+    };
+    const sendFilter = () => {
         let send_data = JSON.stringify(
             {
                 job: 'filter',
@@ -199,7 +242,8 @@ function Page() {
                 body: send_data,
             }).then(response => {
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    setErrorSnack(true)
+                    console.error('Network response was not ok');
                 }
 
                 response.json().then((d) => {
@@ -212,7 +256,7 @@ function Page() {
                             AMT: d.AMT[i],
                             NAME: d.NAME[i],
                             TIME: d.TIME[i],
-                            DESC:d.DESC
+                            DESC: d.DESC
                         }
 
                         lst_.push(e);
@@ -225,6 +269,7 @@ function Page() {
 
         }
         catch (error) {
+            setErrorSnack(true);
             console.error("Error:", error.message);
         }
 
@@ -244,7 +289,7 @@ function Page() {
                     <RefreshIcon />
                 </Fab>
             </Box>
-            <Button onClick={handleFilter}>Filter</Button>
+            <Button variant="contained" onClick={handleFilter}>Filter</Button>
 
             <Dialog
                 open={addDialogOpen}
@@ -317,6 +362,46 @@ function Page() {
                 </DialogActions>
             </Dialog>
 
+            <Dialog
+                open={filterDialogOpen}
+                onClose={handleFilterDialogClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Filter"}
+                </DialogTitle>
+                <DialogContent>
+                <DialogContentText id="alert-dialog-description" style={{margin:'10px'}}>
+                        Filter transactions for one person and display them
+                    </DialogContentText>
+                    <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">Name</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={filterSelect}
+                            label="Type"
+                            onChange={(e) => {
+                                setFilterSelect(e.target.value);
+                            }}
+                        >
+                            {
+                                getUniquenames(list).map((e) => {
+                                    <MenuItem value={e}>{e}</MenuItem>
+                                })
+                            }
+                        </Select>
+                    </FormControl>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleFilterDialogClose}>Cancel</Button>
+                    <Button onClick={handleSendFilter} autoFocus>
+                        Filter
+                    </Button>
+                </DialogActions>
+
+            </Dialog>
 
             <Box sx={{ width: '80%', backgroundColor: 'var(--background-100)' }}>
                 <nav aria-label="main mailbox folders">
@@ -334,8 +419,6 @@ function Page() {
 
                             ))
                         }
-
-
                     </List>
                 </nav>
 
@@ -346,6 +429,12 @@ function Page() {
                 autoHideDuration={6000}
                 message="Feilds cannot be empty!"
                 action={snackAction}
+            />
+            <Snackbar
+                open={openErrorSnack}
+                autoHideDuration={6000}
+                message="An error occured! check console!"
+                action={errorSnackAction}
             />
         </>
 
